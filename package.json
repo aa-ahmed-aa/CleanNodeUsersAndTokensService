@@ -4,8 +4,25 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon app.js",
+    "start dev": "nodemon",
+    "test": "node run test"
   },
   "author": "aa-ahmed-aa",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.0",
+    "express-validator": "^5.3.1",
+    "lodash": "^4.17.11",
+    "mongoose": "^5.5.9",
+    "nodemon": "^1.19.0"
+  },
+  "devDependencies": {
+    "chi": "0.0.10",
+    "eslint": "^5.16.0",
+    "guardians-labs-eslint-config": "^1.0.0",
+    "mocha": "^6.1.4"
+  }
 }
