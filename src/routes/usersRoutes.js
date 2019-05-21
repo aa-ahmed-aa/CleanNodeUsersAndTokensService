@@ -6,7 +6,7 @@ const _ = require('lodash');
 const UserController = require('../controllers/UsersController');
 const userController = new UserController();
 
-const acceptedExtensions = ['.png', '.jgp', '.jpeg'];
+const acceptedExtensions = require('../../config/images').acceptedExtensions;
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

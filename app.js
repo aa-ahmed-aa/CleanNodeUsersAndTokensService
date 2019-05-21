@@ -3,8 +3,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const _ = require('lodash');
 const expressValidator = require('express-validator');
 const config = require('./config/database');
+
+const acceptedExtensions = require('./config/images').acceptedExtensions;
 
 mongoose.connect(config.database, { useNewUrlParser: true });
 const db = mongoose.connection;
@@ -19,16 +22,9 @@ const port = process.env.PORT || 3000;
 
 //Express Validator Middleware
 app.use(expressValidator({
-    errorFormatter: (param, msg, value) => {
-        // const namespace = param.split('.');
-        // const root = namespace.shift();
-        // let formParam = root;
-
-        // while(namespace.length) {
-        //     formParam += `${namespace.shift()}`;
-        // }
+    errorFormatter: (param, msg) => {
         return {
-            param: {
+            [param]: {
                 error: msg,
             },
         };
@@ -36,16 +32,10 @@ app.use(expressValidator({
     customValidators: {
         isImage: (value, filename) => {
             const extension = (path.extname(filename)).toLowerCase();
-            switch(extension) {
-                case'.png':
-                    return '.png';
-                case'.jgp':
-                    return '.jgp';
-                case'.jpeg':
-                    return '.jpeg';
-                default:
-                    return false;
+            if(_.includes(acceptedExtensions, extension)) {
+                return extension;
             }
+            return false;
         },
     },
     
