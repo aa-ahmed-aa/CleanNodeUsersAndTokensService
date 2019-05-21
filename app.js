@@ -2,7 +2,7 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+const path = require('path');
 const expressValidator = require('express-validator');
 const config = require('./config/database');
 
@@ -17,25 +17,38 @@ db.on('error', err => console.log(err));
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
 //Express Validator Middleware
 app.use(expressValidator({
     errorFormatter: (param, msg, value) => {
-        const namespace = param.split('.');
-        const root = namespace.shift();
-        let formParam = root;
+        // const namespace = param.split('.');
+        // const root = namespace.shift();
+        // let formParam = root;
 
-        while(namespace.length) {
-            formParam += `[${namespace.shift()}]`;
-        }
+        // while(namespace.length) {
+        //     formParam += `${namespace.shift()}`;
+        // }
         return {
-            param: formParam,
-            msg,
-            value, 
+            param: {
+                error: msg,
+            },
         };
     },
+    customValidators: {
+        isImage: (value, filename) => {
+            const extension = (path.extname(filename)).toLowerCase();
+            switch(extension) {
+                case'.png':
+                    return '.png';
+                case'.jgp':
+                    return '.jgp';
+                case'.jpeg':
+                    return '.jpeg';
+                default:
+                    return false;
+            }
+        },
+    },
+    
 }));
 
 //Router list

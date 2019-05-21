@@ -52,25 +52,19 @@ class UserController {
          *  -validate the user before insert it 
          *  -insert the user & return the inserted object data as required in the doc file
         */
-
         const newUser = {
-            first_name: 'Ahmed',
-            last_name: 'Khaled',
-            country_code: 'US',
-            phone_number: '+201119501271',
-            gender: 'male',
-            birthdate: '1995-9-16',
-            avatar: 'test.jpg',
-            email: 'ahmedkhaled36@hotmail.com',
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            country_code: req.body.country_code,
+            phone_number: req.body.phone_number,
+            gender: req.body.gender,
+            birthdate: req.body.birthdate,
+            avatar: _.has(req.file, 'filename') ? req.file.filename : '',
+            email: req.body.email,
         };
-
-        const promise = userRepository.create(newUser);
+        
+        const promise = userRepository.create(req, res, newUser);
         respond(promise, 201).then(response => res.send(response));
-        // newUser.save(err => {
-        //     if(err)
-        //         console.log(err);
-        //     res.json(newUser);
-        // });
     }
     
 }
