@@ -49,6 +49,8 @@ class TokenController {
 
     validateFields(req) {
         req.checkBody('email', 'blank').notEmpty();
+        req.checkBody('email', 'not_valid_email').isEmail();
+
         req.checkBody('password', 'blank').notEmpty();
 
         return req.validationErrors();
