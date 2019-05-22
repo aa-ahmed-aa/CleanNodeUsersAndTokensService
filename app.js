@@ -46,12 +46,8 @@ app.use(expressValidator({
 }));
 
 //Router list
-const routes = require('./src/routes/UsersRoutes');
-routes(app);
-
-app.use((req, res) => {
-    res.status(404).send({ url: `${req.originalUrl} not found` });
-});
+const api = require('./src/routes/api');
+api(app);
 
 //Start Server
 app.listen(port, () => {
