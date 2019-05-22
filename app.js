@@ -2,6 +2,8 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const User = require('./src/models/User');
+const userSchema = mongoose.model('User', User);
 const path = require('path');
 const _ = require('lodash');
 const expressValidator = require('express-validator');
@@ -37,6 +39,8 @@ app.use(expressValidator({
             }
             return false;
         },
+        isUniqueEmail: () => false,
+        isNotUniqueEmail: () => true,
     },
     
 }));
