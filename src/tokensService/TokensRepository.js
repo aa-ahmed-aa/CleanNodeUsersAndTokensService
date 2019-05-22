@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const Token = require('../models/Token');
+const Token = require('./Token');
 const tokenSchema = mongoose.model('Token', Token);
 
 class TokensRepository {

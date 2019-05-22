@@ -1,7 +1,7 @@
 'use strict';
 
 const multerHelper = require('multer');
-const TokenController = require('../controllers/TokensController');
+const TokenController = require('./TokensController');
 const tokenController = new TokenController();
 
 const multer = multerHelper();

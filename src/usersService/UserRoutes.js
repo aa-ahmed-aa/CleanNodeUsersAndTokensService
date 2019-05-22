@@ -3,7 +3,7 @@
 const multer = require('multer');
 const path = require('path');
 const _ = require('lodash');
-const UserController = require('../controllers/UsersController');
+const UserController = require('./UsersController');
 const userController = new UserController();
 
 const acceptedExtensions = require('../../config/images').acceptedExtensions;

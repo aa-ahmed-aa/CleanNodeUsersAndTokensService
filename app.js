@@ -2,12 +2,11 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const User = require('./src/models/User');
-const userSchema = mongoose.model('User', User);
 const path = require('path');
 const _ = require('lodash');
 const expressValidator = require('express-validator');
 const config = require('./config/database');
+const api = require('./src/api');
 
 const acceptedExtensions = require('./config/images').acceptedExtensions;
 
@@ -46,7 +45,6 @@ app.use(expressValidator({
 }));
 
 //Router list
-const api = require('./src/routes/api');
 api(app);
 
 //Start Server

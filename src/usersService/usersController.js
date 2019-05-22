@@ -1,11 +1,12 @@
 'use strict';
 
 const _ = require('lodash');
-const UserRepository = require('../repositories/UsersRepository');
+const ObjectId = require('mongodb').ObjectID;
+const UserRepository = require('./UsersRepository');
 const userRepository = new UserRepository();
 
 const mongoose = require('mongoose');
-const User = require('../models/User');
+const User = require('./User');
 const userSchema = mongoose.model('User', User);
 
 const HTTP_ERRORS = {
@@ -44,6 +45,7 @@ const respond = (promise, code) =>
 class UserController {
 
     listAllUsers(req, res) {
+        res.send(new ObjectId(_.repeat('f', 24)));
         const promise = userRepository.listAll(req, res);
         respond(promise, 200).then(response => res.send(response));
     }

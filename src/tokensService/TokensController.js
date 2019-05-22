@@ -1,6 +1,6 @@
 'use strict';
 
-const TokensRepository = require('../repositories/TokensRepository');
+const TokensRepository = require('./TokensRepository');
 const tokenRepository = new TokensRepository();
 
 class TokenController {

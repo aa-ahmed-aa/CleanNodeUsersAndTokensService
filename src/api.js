@@ -1,5 +1,5 @@
-const userRoutes = require('./UserRoutes');
-const tokenRoutes = require('./TokenRoutes');
+const userRoutes = require('./usersService/UserRoutes');
+const tokenRoutes = require('./tokensService/TokenRoutes');
 
 module.exports = app => {
     userRoutes(app);
