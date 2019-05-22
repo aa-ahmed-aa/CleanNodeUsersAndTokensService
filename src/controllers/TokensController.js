@@ -1,7 +1,5 @@
 'use strict';
 
-const crypto = require('crypto');
-const _ = require('lodash');
 const TokensRepository = require('../repositories/TokensRepository');
 const tokenRepository = new TokensRepository();
 
@@ -13,15 +11,22 @@ class TokenController {
 
     createAToken(req, res) {
         const newToken = this.getTokenObject(req);
+
+        const errors = this.validateFields(req);
+
+        if(errors) {
+            this.respond(res, 200, errors, true);
+        }
+        
         tokenRepository.create(newToken).then(response => {
-            const ress = {
+            const tokenObject = {
                 _id: response._id,
                 auth_token: response.auth_token,
                 email: response.email,
                 create_at: response.created_at,
             };
 
-            this.respond(res, 200, ress);
+            this.respond(res, 200, tokenObject);
         });     
     }
 
@@ -29,7 +34,6 @@ class TokenController {
         return {
             email: req.body.email,
             password: req.body.password,
-            auth_token: crypto.randomBytes(20).toString('hex'),
         };
     }
 
@@ -41,6 +45,13 @@ class TokenController {
             const response = { status: 201, response: data };
             res.status(201).send(response);
         }
+    }
+
+    validateFields(req) {
+        req.checkBody('email', 'blank').notEmpty();
+        req.checkBody('password', 'blank').notEmpty();
+
+        return req.validationErrors();
     }
     
 }

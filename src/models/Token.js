@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
@@ -25,7 +26,7 @@ const Token = new Schema({
 
     auth_token: {
         type: String,
-        required: 'blank',
+        default: () => generateUniqueToken(),
     },
 
     created_at: {
@@ -37,6 +38,8 @@ const Token = new Schema({
         type: Date,
     },
 });
+
+const generateUniqueToken = () => crypto.randomBytes(20).toString('hex');
 
 Token.pre('save', function(next) {
     const token = this;
