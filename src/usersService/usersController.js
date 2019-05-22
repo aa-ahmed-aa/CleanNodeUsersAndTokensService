@@ -1,58 +1,21 @@
 'use strict';
 
 const _ = require('lodash');
-const ObjectId = require('mongodb').ObjectID;
 const UserRepository = require('./UsersRepository');
 const userRepository = new UserRepository();
-
 const mongoose = require('mongoose');
 const User = require('./User');
 const userSchema = mongoose.model('User', User);
 
-const HTTP_ERRORS = {
-    INVALID_DATA: 'users.invalid_data',
-    NOT_EXISTING: 'users.not_existing',
-    missingId: id => `users.missing_${id}`,
-    internal: code => `users.internal_server_error:${code}`,
-};
-
-const respond = (promise, code) => 
-    promise.then(response => {
-        if(!_.isArray(response)) {
-            response = [response];
-        }
-
-        return { status: code, response };
-    }).catch(err => {
-        let errors;
-
-        if('UserNotFound' === err.name) {
-            errors = HTTP_ERRORS.NOT_EXISTING;
-        } else if('ValidationError' === err.name) {
-            errors = HTTP_ERRORS.INVALID_DATA;
-        } else {
-            errors = HTTP_ERRORS.internal(code);
-        }
-
-        const response = { status: code, errors };
-        if(!_.isNil(err.errors)) {
-            response.details = err.errors;
-        }
-
-        return response;
-    });
-
 class UserController {
 
     listAllUsers(req, res) {
-        res.send(new ObjectId(_.repeat('f', 24)));
         const promise = userRepository.listAll(req, res);
-        respond(promise, 200).then(response => res.send(response));
+        promise.then(response => this.respond(res, 200, response));
     }
 
     createAUser(req, res) {
         // - extract the user from the request
-
         const newUser = this.getUserObjectFromRequest(req);
 
         // - validate the user before insert it
@@ -74,8 +37,8 @@ class UserController {
             const errorsObj = { status: 400, errors: data };
             res.status(code).send(errorsObj);
         } else {
-            const response = { status: 201, response: data };
-            res.status(201).send(response);
+            const response = { status: code, response: data };
+            res.status(code).send(response);
         }
     }
 
