@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "start dev": "nodemon",
-    "test": "node run test"
+    "test": "./node_modules/.bin/mocha ./test/**/*Spec.js --exit --recursive --timeout=60000",
+    "lint": "./node_modules/.bin/eslint ./src/ ./test/ ./app.js"
   },
   "author": "aa-ahmed-aa",
   "license": "ISC",
