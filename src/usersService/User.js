@@ -80,6 +80,8 @@ const User = new Schema({
         ],
     },
 
+    status: [{ name: String, description: String }],
+
     created_at: {
         type: Date,
         default: Date.now,
