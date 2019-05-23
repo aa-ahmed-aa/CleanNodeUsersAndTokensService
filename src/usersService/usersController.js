@@ -28,7 +28,7 @@ const respond = (res, code, data) => {
 class UserController {
 
     listAllUsers(req, res) {
-        const promise = userRepository.listAll(req, res);
+        const promise = userRepository.listAll();
         promise.then(response => respond(res, 200, response));
     }
 
