@@ -61,6 +61,8 @@ Token.methods.comparePassword = function(password) {
     return bcrypt.compare(password, this.password);
 };
 
+Token.methods.generateUniqueToken = generateUniqueToken();
+
 Token.plugin(uniqueValidator);
 
 module.exports = Token;
