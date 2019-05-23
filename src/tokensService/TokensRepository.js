@@ -15,6 +15,10 @@ class TokensRepository {
         return tokenSchema.create(newToken);
     }
     
+    findOneByToken(token) {
+        return tokenSchema.findOne({ auth_token: token });
+    }
+    
 }
 
 module.exports = TokensRepository;
