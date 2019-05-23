@@ -1,84 +1,38 @@
 'use strict';
 
-const _ = require('lodash');
 const UserRepository = require('./UsersRepository');
 const userRepository = new UserRepository();
-const mongoose = require('mongoose');
-const User = require('./User');
-const userSchema = mongoose.model('User', User);
+const _ = require('lodash');
+
+const respond = (res, code, data) => {
+    if(data.name === 'ValidationError') {
+        data = _.mapValues(data.errors, object => {
+            return { error: object.message };
+        });
+        const errorsObj = { status: code, errors: data };
+        return res.status(code).send(errorsObj);
+    }
+
+    const response = { status: code, response: data };
+    return res.status(code).send(response);
+};
 
 class UserController {
 
     listAllUsers(req, res) {
         const promise = userRepository.listAll(req, res);
-        promise.then(response => this.respond(res, 200, response));
+        promise.then(response => respond(res, 200, response));
     }
 
     createAUser(req, res) {
-        // - extract the user from the request
-        const newUser = this.getUserObjectFromRequest(req);
-
-        // - validate the user before insert it
-        const errors = this.validateFields(req, newUser);
-
-        errors.then(errs => {
-            if(errs) {
-                this.respond(res, 400, errs, true);
-            } else {
-                userRepository.create(newUser).then(data => {
-                    this.respond(res, 201, data);
-                });
-            }
-        });
+        const promise = userRepository.create(this.getUserObjectFromRequest(req));
+        
+        promise.then(data => respond(res, 201, data))
+            .catch(err => respond(res, 400, err));
     }
 
-    respond(res, code, data, err = false) {
-        if(err) {
-            const errorsObj = { status: 400, errors: data };
-            res.status(code).send(errorsObj);
-        } else {
-            const response = { status: code, response: data };
-            res.status(code).send(response);
-        }
-    }
-
-    /**
-     * Validation
-     */
-    validateFields(req, newUser) {
-        return userSchema.find({ email: req.body.email }).then(user => {
-            req.checkBody('first_name', 'blank').notEmpty();
-            req.checkBody('last_name', 'blank').notEmpty();
-            req.checkBody('country_code', 'blank').notEmpty();
-            
-            //phone number must be between 10 - 15 and matches the phone number format E.164
-            req.checkBody('phone_number', 'not_a_valid_phone_number').matches(/^\+?[1-9]\d{1,14}$/, 'i');
-            req.checkBody('phone_number', 'too_short').isLength({ min: 10 });
-            req.checkBody('phone_number', 'too_long').isLength({ max: 15 });
-            
-            req.checkBody('gender', 'blank').notEmpty();
-            req.checkBody('gender', 'inclusion').isIn(['male', 'female', 'other']);
-
-            //Date not empty and before today
-            req.checkBody('birthdate', 'blank').notEmpty();
-            req.checkBody('birthdate', 'in_the_future').isBefore(Date().toString());
-
-            req.body.avatar = newUser.avatar;
-            //avatar matches extensions
-            req.checkBody('avatar', 'blank').notEmpty();
-            req.checkBody('avatar', 'invalid_content_type').isImage(newUser.avatar);
-            
-            // //email not ampty and valid email
-            req.checkBody('email', 'blank').notEmpty();
-            req.checkBody('email', 'invalid').isEmail();
-            
-            if(!_.isEmpty(user))
-                req.checkBody('email', 'taken').isUniqueEmail();
-            else
-                req.checkBody('email', 'taken').isNotUniqueEmail();
-
-            return req.validationErrors();
-        });
+    assignUserStatue(req, res) {
+        respond(res, 200, req.body);
     }
 
     getUserObjectFromRequest(req) {

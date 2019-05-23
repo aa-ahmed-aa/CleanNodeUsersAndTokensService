@@ -2,32 +2,39 @@
 
 const TokensRepository = require('./TokensRepository');
 const tokenRepository = new TokensRepository();
+const _ = require('lodash');
+
+const respond = (res, code, data) => {
+    if(data.name === 'ValidationError') {
+        data = _.mapValues(data.errors, object => {
+            return { error: object.message };
+        });
+        const errorsObj = { status: code, errors: data };
+        return res.status(code).send(errorsObj);
+    }
+
+    const response = { status: code, response: data };
+    return res.status(code).send(response);
+};
 
 class TokenController {
 
     listAllTokens(req, res) {
-        tokenRepository.listAll(req, res).then(response => this.respond(res, 200, response));
+        tokenRepository.listAll(req, res).then(response => respond(res, 200, response));
     }
 
     createAToken(req, res) {
-        const newToken = this.getTokenObject(req);
-
-        const errors = this.validateFields(req);
-
-        if(errors) {
-            this.respond(res, 200, errors, true);
-        }
+        const promise = tokenRepository.create(this.getTokenObject(req));
         
-        tokenRepository.create(newToken).then(response => {
+        promise.then(response => {
             const tokenObject = {
                 _id: response._id,
                 auth_token: response.auth_token,
                 email: response.email,
                 create_at: response.created_at,
             };
-
-            this.respond(res, 200, tokenObject);
-        });     
+            respond(res, 201, tokenObject);
+        }).catch(err => respond(res, 400, err));     
     }
 
     getTokenObject(req) {
@@ -37,25 +44,6 @@ class TokenController {
         };
     }
 
-    respond(res, code, data, err = false) {
-        if(err) {
-            const errorsObj = { status: 400, errors: data };
-            res.status(code).send(errorsObj);
-        } else {
-            const response = { status: 201, response: data };
-            res.status(201).send(response);
-        }
-    }
-
-    validateFields(req) {
-        req.checkBody('email', 'blank').notEmpty();
-        req.checkBody('email', 'not_valid_email').isEmail();
-
-        req.checkBody('password', 'blank').notEmpty();
-
-        return req.validationErrors();
-    }
-    
 }
 
 module.exports = TokenController;

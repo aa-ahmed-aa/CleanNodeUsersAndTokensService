@@ -1,5 +1,6 @@
 'use strict';
 
+const uniqueValidator = require('mongoose-unique-validator');
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const path = require('path');
@@ -32,9 +33,10 @@ const User = new Schema({
                 message: 'not_a_valid_phone_number',
             },
         ],
-        required: 'blank',
         minlength: [10, 'too_short'],
         maxlength: [15, 'too_long'],
+        required: 'blank',
+        unique: 'taken',
     },
 
     gender: {
@@ -55,7 +57,7 @@ const User = new Schema({
         type: String,
         validate: {
             validator: fileName => {
-                if(_.indexOf(acceptedExtensions, _.toLower(path.extname(fileName))) >= 0)
+                if(_.indexOf(acceptedExtensions, path.extname(fileName)) >= 0)
                     return true;
                 
                 fs.unlinkSync(`./public/images/users/${fileName}`);
@@ -68,11 +70,14 @@ const User = new Schema({
 
     email: {
         type: String,
-        validate: {
-            validator: email => 
-                /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email),
-            message: 'invalid',
-        },
+        unique: 'taken',
+        validate: [
+            {
+                validator: email => 
+                    /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email),
+                message: 'invalid',
+            },
+        ],
     },
 
     created_at: {
@@ -84,5 +89,7 @@ const User = new Schema({
         type: Date,
     },
 });
+
+User.plugin(uniqueValidator);
 
 module.exports = User;

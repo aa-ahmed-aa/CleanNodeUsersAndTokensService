@@ -2,12 +2,12 @@
 
 const multer = require('multer');
 const path = require('path');
-const _ = require('lodash');
 const UserController = require('./UsersController');
 const userController = new UserController();
 
-const acceptedExtensions = require('../../config/images').acceptedExtensions;
-
+/**
+ * Image Helper Milldeware
+ */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/images/users');
@@ -18,21 +18,19 @@ const storage = multer.diskStorage({
     },
 });
 
-//Images filter according to the allowed image extensions
-const fileFilter = (req, file, callback) => {
-    const ext = path.extname(file.originalname);
-    if(!_.includes(acceptedExtensions, ext)) {
-        return callback();
-    }
-    callback(null, true);
-};
+const upload = multer({ storage });
 
-const upload = multer({ storage, fileFilter });
-
+/**
+ * Users Routes
+ */
 module.exports = app => {
     app.route('/users')
         .get((req, res) => userController.listAllUsers(req, res))
         .post(upload.single('avatar'), (req, res) => {
             userController.createAUser(req, res);
         });
+
+    app.route('/status').post(upload.array(), (req, res) => {
+        userController.assignUserStatue(req, res);
+    });
 };
