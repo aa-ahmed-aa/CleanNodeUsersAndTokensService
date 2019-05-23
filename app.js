@@ -5,7 +5,11 @@ const mongoose = require('mongoose');
 const config = require('./config/database');
 const api = require('./src/api');
 
-mongoose.connect(config.database, { useNewUrlParser: true });
+mongoose.connect(config.database, { 
+    useNewUrlParser: true, //use the new url parser
+    useFindAndModify: false, // override the mongo findAndModify function so mongoose can user the update function
+    useCreateIndex: true, //ensure Index is not deprecated  
+});
 const db = mongoose.connection;
 
 //Check connection & any db errors
