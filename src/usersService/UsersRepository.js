@@ -15,6 +15,19 @@ class UsersRepository {
         return userSchema.create(newUser);
     }
     
+    findOneByEmail(userEmail) {
+        return userSchema.findOne({ email: userEmail });
+    }
+
+    findOneByPhoneNumber(phoneNumber) {
+        return userSchema.findOne({ phone_number: phoneNumber });
+    }
+
+    assignStatusToUser(status, userId) {
+        status = JSON.parse(status);
+        return userSchema.findByIdAndUpdate(userId, { status }, { new: true });
+    }
+
 }
 
 module.exports = UsersRepository;

@@ -1,9 +1,17 @@
 'use strict';
 
+const TokenRepository = require('../tokensService/TokensRepository');
 const UserRepository = require('./UsersRepository');
+const tokenRepository = new TokenRepository();
 const userRepository = new UserRepository();
 const _ = require('lodash');
 
+/**
+ * Create response and handling error parsing if there is any validation errors
+ * @param res Response object 
+ * @param code the status code to set in the response header
+ * @param data the data to be parsed in the response
+ */
 const respond = (res, code, data) => {
     if(data.name === 'ValidationError') {
         data = _.mapValues(data.errors, object => {
@@ -32,7 +40,32 @@ class UserController {
     }
 
     assignUserStatue(req, res) {
-        respond(res, 200, req.body);
+        /**
+         * ToDo
+         * - Search for auth_token in tokens
+         *      + if not found return "unauthorized access"
+         * - Search for email in users
+         *      + if not found return "bad request"
+         * - Link status object to users and return user object
+         */
+        
+        if(_.isEmpty(req.body.status))
+            return respond(res, 400, 'Bad Request');
+
+        const tokenPromise = tokenRepository.findOneByToken(req.body.auth_token);
+        tokenPromise.then(val => {
+            if(_.isNil(val))
+                return respond(res, 401, 'Unauthorized access');
+        });
+
+        const userPromise = userRepository.findOneByPhoneNumber(req.body.phone_number);
+        userPromise.then(val => {
+            if(_.isNil(val))
+                return respond(res, 400, 'Bad Request');
+
+            const userAfterStatus = userRepository.assignStatusToUser(req.body.status, val._id);
+            userAfterStatus.then(statusUser => respond(res, 400, statusUser));
+        });
     }
 
     getUserObjectFromRequest(req) {
