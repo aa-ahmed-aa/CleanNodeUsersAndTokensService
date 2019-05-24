@@ -14,13 +14,11 @@ module.exports = {
         birthdate: '1995-9-16',
         avatar: 'avatar.png',
         email: 'ahmedkhaled36@hotmail.com',
-        create_at: Date.now(),
     },
     
     token: {
-        auth_token: tokenSchema.generateUniqueToken,
         email: 'ahmedkhaled36@hotmail.com',
-        create_at: Date.now(),
+        password: 'ahmedkhaled'
     },
 
     status: '{ "name": "active", "description":"user is active now" }',
