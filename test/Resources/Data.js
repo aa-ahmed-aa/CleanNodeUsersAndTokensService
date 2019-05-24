@@ -18,7 +18,7 @@ module.exports = {
     
     token: {
         email: 'ahmedkhaled36@hotmail.com',
-        password: 'ahmedkhaled'
+        password: 'ahmedkhaled',
     },
 
     status: '{ "name": "active", "description":"user is active now" }',
