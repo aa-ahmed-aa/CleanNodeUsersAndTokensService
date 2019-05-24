@@ -53,18 +53,18 @@ class UserController {
             return respond(res, 400, 'Bad Request');
 
         const tokenPromise = tokenRepository.findOneByToken(req.body.auth_token);
-        tokenPromise.then(val => {
-            if(_.isNil(val))
+        tokenPromise.then(token => {
+            if(_.isNil(token))
                 return respond(res, 401, 'Unauthorized access');
-        });
 
-        const userPromise = userRepository.findOneByPhoneNumber(req.body.phone_number);
-        userPromise.then(val => {
-            if(_.isNil(val))
-                return respond(res, 400, 'Bad Request');
-
-            const userAfterStatus = userRepository.assignStatusToUser(req.body.status, val._id);
-            userAfterStatus.then(statusUser => respond(res, 400, statusUser));
+            const userPromise = userRepository.findOneByPhoneNumber(req.body.phone_number);
+            userPromise.then(user => {
+                if(_.isNil(user))
+                    return respond(res, 400, 'Bad Request');
+    
+                const userAfterStatus = userRepository.assignStatusToUser(req.body.status, user._id);
+                userAfterStatus.then(statusUser => respond(res, 400, statusUser));
+            });
         });
     }
 
