@@ -1,20 +1,10 @@
 'use strict';
 
 const express = require('express');
-const mongoose = require('mongoose');
-const database = require('./config/database');
+const connection = require('./connection');
 const api = require('./src/api');
 
-mongoose.connect(database.url + database.databaseName, {
-    useNewUrlParser: true, 
-    useFindAndModify: false, 
-    useCreateIndex: true,
-});
-const db = mongoose.connection;
-
-//Check connection & any db errors
-db.once('open', () => console.log('Connected to MongoDB'));
-db.on('error', err => console.log(err));
+connection();
 
 //Init App on port 3000
 const app = express();
