@@ -6,3 +6,9 @@ public/
 # Configuration files
 config/database.js
 
+.nyc_output
+
+coverage
+
+.vscode
+
