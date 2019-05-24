@@ -64,7 +64,7 @@ class UserController {
                     return respond(res, 400, 'Bad Request');
     
                 const userAfterStatus = userRepository.assignStatusToUser(req.body.status, user._id);
-                userAfterStatus.then(statusUser => respond(res, 400, statusUser));
+                userAfterStatus.then(statusUser => respond(res, 201, statusUser));
             });
         });
     }

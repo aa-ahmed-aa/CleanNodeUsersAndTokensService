@@ -1,6 +1,8 @@
 'use strict';
 
 const UsersRepository = require('../../src/usersService/UsersRepository');
+const TokensRepository = require('../../src/tokensService/TokensRepository');
+const tokenRepository = new TokensRepository(); 
 const expect = require('../resources/chai').expect;
 const database = require('../../config/database');
 const userRepository = new UsersRepository();
@@ -13,6 +15,7 @@ const app = require('../../app');
 // const fs = require('fs');
 
 const sampleUser = data.user;
+const sampleToken = data.token;
 
 // const acceptedExtensions = require('../../config/images').acceptedExtensions;
 // const imagesUploadPath = require('../../config/images').image_upload_path;
@@ -179,6 +182,14 @@ describe('usersService', () => {
     });
 
     describe('UserRoutes', () => {
+        it('GET /asdasd -> should return 404 status', () => request(app)
+            .get('/asdasd')
+            .then(response => {
+                // assert.equal(response.status, 200);
+                expect(response.status).to.be.equals(404);
+            })
+        );
+
         it('GET /users -> should return OK status', () => request(app)
             .get('/users')
             .then(response => {
@@ -188,7 +199,7 @@ describe('usersService', () => {
         );
 
         it('POST /users -> should return 400 invalid_content_type', () => {
-            const user = sampleUser; 
+            const user = _.cloneDeep(sampleUser); 
             user.email = 'test@test.com';
             user.phone_number = '+20124412345';
 
@@ -202,6 +213,87 @@ describe('usersService', () => {
                     expect(response.status).to.be.equals(400);
                     return expect(res.errors.avatar.error).to.be.equals('invalid_content_type');
                 });
+        });
+
+        it('POST /status -> should return 201 with updated user with status', () => {
+            const user = _.cloneDeep(sampleUser);
+            const token = _.cloneDeep(sampleToken);
+            
+            user.email = 'test@test.com';
+            user.phone_number = '+20233123512';
+            token.email = user.email;
+
+            return userRepository.create(user).then(createdUser => 
+                tokenRepository.create(token).then(createdToken => {
+                    const status = _.cloneDeep(data.status);
+                    
+                    const statusBody = {
+                        phone_number: createdUser.phone_number,
+                        auth_token: createdToken.auth_token,
+                        status,
+                    };
+
+                    return request(app)
+                        .post('/status')
+                        .field(statusBody)
+                        .then(response => {
+                            expect(response.status).to.be.equals(201);
+                        });
+                }));
+        });
+
+        it('POST /status -> should return 400 Bad Request', () => {
+            const user = _.cloneDeep(sampleUser);
+            const token = _.cloneDeep(sampleToken);
+            
+            user.email = 'ali@ali.com';
+            user.phone_number = '+202331235127';
+            token.email = user.email;
+
+            return userRepository.create(user).then(() => 
+                tokenRepository.create(token).then(createdToken => {
+                    const status = _.cloneDeep(data.status);
+                    
+                    const statusBody = {
+                        phone_number: '',
+                        auth_token: createdToken.auth_token,
+                        status,
+                    };
+
+                    return request(app)
+                        .post('/status')
+                        .field(statusBody)
+                        .then(response => {
+                            expect(response.status).to.be.equals(400);
+                        });
+                }));
+        });
+
+        it('POST /status -> should return  401 Unauthorized access', () => {
+            const user = _.cloneDeep(sampleUser);
+            const token = _.cloneDeep(sampleToken);
+            
+            user.email = 'samy@samy.com';
+            user.phone_number = '+202323123512';
+            token.email = user.email;
+
+            return userRepository.create(user).then(createdUser => 
+                tokenRepository.create(token).then(() => {
+                    const status = _.cloneDeep(data.status);
+                    
+                    const statusBody = {
+                        phone_number: createdUser.phone_number,
+                        auth_token: '',
+                        status,
+                    };
+
+                    return request(app)
+                        .post('/status')
+                        .field(statusBody)
+                        .then(response => {
+                            expect(response.status).to.be.equals(401);
+                        });
+                }));
         });
     });
 });
