@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "./node_modules/.bin/mocha ./test/**/*Spec.js --exit --recursive --timeout=60000",
-    "lint": "./node_modules/.bin/eslint ./src/ ./test/ ./app.js"
+    "test": "./node_modules/.bin/mocha ./test/**/*.spec.js --exit --recursive --timeout=5000",
+    "lint": "./node_modules/.bin/eslint ./src/ ./test/ ./app.js",
+    "coverage": "./node_modules/.bin/nyc ./node_modules/.bin/mocha ./test/ --recursive --timeout=60000 --exit"
   },
   "author": "aa-ahmed-aa",
   "license": "ISC",
@@ -20,9 +21,12 @@
     "nodemon": "^1.19.0"
   },
   "devDependencies": {
-    "chi": "0.0.10",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "chai-subset": "^1.6.0",
     "eslint": "^5.16.0",
     "eslint-config-guardians-labs": "^1.0.0",
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "nyc": "^14.1.1"
   }
 }
