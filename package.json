@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "./node_modules/.bin/mocha ./test/**/*.spec.js --exit --recursive --timeout=5000",
+    "test": "./node_modules/.bin/mocha ./test/**/*.spec.js --exit --recursive --timeout=60000",
     "lint": "./node_modules/.bin/eslint ./src/ ./test/ ./app.js",
     "coverage": "./node_modules/.bin/nyc ./node_modules/.bin/mocha ./test/ --recursive --timeout=60000 --exit"
   },
@@ -15,7 +15,7 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.0",
     "lodash": "^4.17.11",
-    "mongoose": "^5.5.9",
+    "mongoose": "^5.5.11",
     "mongoose-unique-validator": "^2.0.3",
     "multer": "^1.4.1",
     "nodemon": "^1.19.0"
@@ -27,6 +27,7 @@
     "eslint": "^5.16.0",
     "eslint-config-guardians-labs": "^1.0.0",
     "mocha": "^6.1.4",
-    "nyc": "^14.1.1"
+    "nyc": "^14.1.1",
+    "supertest": "^4.0.2"
   }
 }
