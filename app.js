@@ -2,13 +2,13 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const config = require('./config/database');
+const database = require('./config/database');
 const api = require('./src/api');
 
-mongoose.connect(config.database, { 
-    useNewUrlParser: true, //use the new url parser
-    useFindAndModify: false, // override the mongo findAndModify function so mongoose can user the update function
-    useCreateIndex: true, //ensure Index is not deprecated  
+mongoose.connect(database.url + database.databaseName, {
+    useNewUrlParser: true, 
+    useFindAndModify: false, 
+    useCreateIndex: true,
 });
 const db = mongoose.connection;
 
