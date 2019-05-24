@@ -14,6 +14,7 @@ const _ = require('lodash');
  */
 const respond = (res, code, data) => {
     if(data.name === 'ValidationError') {
+        // return res.status(code).send(data.message);
         data = _.mapValues(data.errors, object => {
             return { error: object.message };
         });

@@ -8,6 +8,7 @@ const fs = require('fs');
 const Schema = mongoose.Schema;
 
 const acceptedExtensions = require('../../config/images').acceptedExtensions;
+const imagesUploadPath = require('../../config/images').image_upload_path;
 
 const User = new Schema({
     first_name: {
@@ -59,8 +60,8 @@ const User = new Schema({
             validator: fileName => {
                 if(_.indexOf(acceptedExtensions, path.extname(fileName)) >= 0)
                     return true;
-                
-                fs.unlinkSync(`./public/images/users/${fileName}`);
+                    
+                fs.unlinkSync(`${imagesUploadPath}${fileName}`);
                 return false;   
             },
             message: 'invalid_content_type',
