@@ -1,8 +1,8 @@
 'use strict';
 
-const mongoose = require('mongoose');
-const Token = require('../../src/tokensService/Token');
-const tokenSchema = mongoose.model('Token', Token);
+// const mongoose = require('mongoose');
+// const Token = require('../../src/tokensService/Token');
+// const tokenSchema = mongoose.model('Token', Token);
 
 module.exports = {
     user: {
