@@ -36,7 +36,7 @@ describe('usersService', () => {
     describe('userRepository', () => {
         it('listAll() -> should return all users', () => 
             userRepository.listAll().then(users => 
-                expect(users).to.be.an('array').and.have.lengthOf(0)
+                expect(users).to.be.an('array').and.have.lengthOf(90)
             )
         );
           
