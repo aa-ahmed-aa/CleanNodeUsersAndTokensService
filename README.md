@@ -17,6 +17,17 @@ mongodb and nodejs
 - run npm install to install the packages
 - see the commands description to check more fun stuff about this task 
 
+```
+./config/database.js
+module.exports = {
+    url: 'mongodb://localhost:27017/',
+    databaseName: 'database_name',
+    testDatabaseName: 'database_Test_name',
+    secret: 'yoursecret',
+};
+
+```
+
 ## Commands
 
 > npm install 
