@@ -1,12 +1,4 @@
-# Cognitive Task
-
-## branches
-
-    Task_1  => For task 1 mentioned in the doc file
-    Task_2  => For task 2 mentioned in the doc file
-    Task_3  => For task 3 mentioned in the doc file
-
-> since this is a local repo so i recommend you get Task_3 branch when reviewing the 3 tasks
+# Clean node project
 
 ## Stack 
 mongodb and nodejs
